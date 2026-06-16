@@ -1,5 +1,6 @@
 // State Management
 let releasesState = [];
+let currentFilteredReleases = [];
 let selectedId = null;
 let activeFilters = {
     search: '',
@@ -44,6 +45,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Setup Event Listeners
 function setupEventListeners() {
+    // Export CSV
+    const btnExportCsv = document.getElementById('btn-export-csv');
+    if (btnExportCsv) {
+        btnExportCsv.addEventListener('click', () => exportToCSV(currentFilteredReleases));
+    }
+
     // Refresh buttons
     btnRefresh.addEventListener('click', () => fetchReleases(true));
     btnRetry.addEventListener('click', () => fetchReleases(true));
@@ -264,6 +271,8 @@ function filterAndRender() {
         });
     }
     
+    currentFilteredReleases = filtered;
+    
     // Render
     if (filtered.length === 0) {
         showEmpty();
@@ -293,16 +302,34 @@ function renderCards(releases) {
             <div class="card-header">
                 <span class="badge ${typeClass}">${release.type}</span>
                 <span class="card-date">${release.date}</span>
+                <button class="btn-copy-card" title="Copiar descrição" data-id="${release.id}">
+                    <i class="fa-regular fa-copy"></i>
+                </button>
             </div>
             <div class="card-body">
                 ${release.description_html}
             </div>
         `;
         
+        // Setup copy card text listener
+        const btnCopyCard = card.querySelector('.btn-copy-card');
+        if (btnCopyCard) {
+            btnCopyCard.addEventListener('click', async (e) => {
+                e.stopPropagation(); // Prevent card selection toggle
+                try {
+                    await navigator.clipboard.writeText(release.description_text);
+                    showToast('Descrição copiada!', 'success');
+                } catch (err) {
+                    console.error('Falha ao copiar:', err);
+                    showToast('Erro ao copiar', 'error');
+                }
+            });
+        }
+        
         // Setup card select click listener
         card.addEventListener('click', (e) => {
-            // Ignore if user clicked an actual link in the body
-            if (e.target.tagName.toLowerCase() === 'a') return;
+            // Ignore if user clicked an actual link in the body or the copy button
+            if (e.target.tagName.toLowerCase() === 'a' || e.target.closest('.btn-copy-card')) return;
             
             toggleCardSelection(release);
         });
@@ -456,4 +483,44 @@ function showToast(message, type = 'success') {
     setTimeout(() => {
         toast.remove();
     }, 3000);
+}
+
+// Export Filtered Releases to CSV
+function exportToCSV(releases) {
+    if (!releases || releases.length === 0) {
+        showToast('Nenhum dado para exportar!', 'error');
+        return;
+    }
+    
+    const headers = ['ID', 'Date', 'Type', 'Link', 'Description'];
+    const rows = releases.map(r => [
+        r.id,
+        r.date,
+        r.type,
+        r.link,
+        r.description_text
+    ]);
+    
+    // Convert to CSV format with proper escaping
+    const csvContent = [
+        headers.join(','),
+        ...rows.map(row => row.map(val => `"${String(val).replace(/"/g, '""')}"`).join(','))
+    ].join('\n');
+    
+    try {
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', `bigquery_releases_${new Date().toISOString().split('T')[0]}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        showToast('CSV exportado com sucesso!', 'success');
+    } catch (err) {
+        console.error('CSV export failed:', err);
+        showToast('Erro ao exportar CSV', 'error');
+    }
 }

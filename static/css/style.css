@@ -568,6 +568,30 @@ body {
     padding-right: 2.5rem; /* Space for checkbox */
 }
 
+.btn-copy-card {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.95rem;
+    padding: 0.35rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-copy-card:hover {
+    color: var(--accent-blue);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.btn-copy-card:active {
+    transform: scale(0.9);
+}
+
 .badge {
     font-size: 0.75rem;
     font-weight: 700;

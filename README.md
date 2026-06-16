@@ -1,50 +1,67 @@
 # BigQuery Release Radar 📡
 
-A premium, interactive web application built with **Python Flask** and **Vanilla JS/CSS** that monitors Google Cloud BigQuery release notes and updates in real-time, allowing you to select and tweet insights directly.
+O **BigQuery Release Radar** é uma aplicação web moderna e interativa desenvolvida com **Python Flask** e **Vanilla JS/CSS** para monitorar, filtrar e compartilhar as notas de lançamento (release notes) do Google Cloud BigQuery.
 
-## Features
+## 🚀 Recursos Principais
 
-- 🔄 **Real-Time Synchronization**: Pulls release notes dynamically from the official Google Cloud feeds with an active refresh spinner.
-- ⚡ **Smart Memory Caching**: 5-minute cache prevents rate-limiting and guarantees lighting-fast response times.
-- 🎨 **Premium Glassmorphic UI**: Vibrant, responsive dark mode design with sleek hover states, micro-animations, and custom typography.
-- 🔍 **Granular Filtering & Search**: Instant keyword search, category filters (Features, Deprecations, Resolved, etc.), and date range selection.
-- 🐦 **Custom X/Twitter Composers**: Select any release note update to compose, preview, and post a tweet with automated 280-character boundary limits and URL auto-wrapping.
-- 📋 **Click-to-Copy**: Quickly copy pre-composed tweet templates to your clipboard with visual toast alerts.
+- 🔄 **Sincronização em Tempo Real**: Coleta as notas diretamente do feed oficial do Google Cloud com um botão de atualização e indicador de carregamento animado.
+- ⚡ **Cache em Memória**: Sistema de cache de 5 minutos que evita o bloqueio de requisições por limite de taxa (rate limiting) e garante respostas rápidas.
+- 🎨 **Design Glassmorphic Premium**: Interface elegante em modo escuro com cores tailandesas modernas, sombras brilhantes, animações suaves e tipografia refinada.
+- 🔍 **Filtro Avançado**: Busca instantânea por palavras-chave, filtragem por categorias dinâmicas (ex: Features, Deprecations, Resolved) e recorte temporal.
+- 🐦 **Compartilhamento Otimizado (X/Twitter)**: Selecione qualquer novidade e abra uma gaveta flutuante para compor e enviar um tweet pré-formatado, com cálculo dinâmico do tamanho limite de 280 caracteres (ajustando links para os 23 caracteres exigidos pelo X).
+- 📋 **Copiar para Área de Transferência**: Copie a postagem rapidamente com notificações flutuantes na tela.
 
-## Technology Stack
+## 🛠️ Tecnologias Utilizadas
 
-- **Backend**: Python Flask, Requests, BeautifulSoup4
-- **Frontend**: Vanilla HTML5, CSS3 Variables, ES6 JavaScript, FontAwesome Icons
-- **Design**: Google Fonts (Outfit & Inter), Glassmorphic styling, CSS-only animations
+- **Servidor (Backend)**: Python, Flask, Requests, BeautifulSoup4
+- **Interface (Frontend)**: HTML5 Semântico, CSS3 (Glows, Grid, Variáveis), ES6 JavaScript, FontAwesome Icons
+- **Tipografia**: Google Fonts (Outfit & Inter)
 
-## Installation & Setup
+## 📂 Estrutura de Diretórios
 
-1. Make sure Python 3.10+ is installed.
-2. Clone or navigate to this directory.
-3. Create a virtual environment and install the dependencies:
+```text
+bq-releases-notes/
+├── app.py                 # Servidor Flask e parser XML/HTML
+├── requirements.txt       # Dependências de pacotes Python
+├── templates/
+│   └── index.html         # Página única do painel (Dashboard)
+├── static/
+│   ├── css/
+│   │   └── style.css      # Estilização, temas e animações CSS
+│   └── js/
+│       └── app.js         # Lógica do cliente, filtragem e composição de tweets
+└── README.md              # Documentação do projeto
+```
+
+## 💻 Instalação e Execução
+
+### Pré-requisitos
+* Python 3.10 ou superior instalado.
+
+### Configuração
+1. Navegue até o diretório do projeto:
+   ```bash
+   cd bq-releases-notes
+   ```
+
+2. Crie e ative um ambiente virtual:
    ```bash
    python -m venv .venv
-   .\.venv\Scripts\activate
+   # No Windows (PowerShell):
+   .\.venv\Scripts\Activate.ps1
+   # No macOS/Linux:
+   source .venv/bin/activate
+   ```
+
+3. Instale as dependências necessárias:
+   ```bash
    pip install -r requirements.txt
    ```
-4. Run the development server:
+
+4. Inicie o servidor de desenvolvimento:
    ```bash
    python app.py
    ```
-5. Open your browser and navigate to `http://127.0.0.1:5000`.
 
-## Directory Structure
-
-```
-bq-releases-notes/
-├── app.py                 # Flask server and feed parser
-├── requirements.txt       # Python package dependencies
-├── templates/
-│   └── index.html         # Main dashboard interface
-├── static/
-│   ├── css/
-│   │   └── style.css      # Premium dark theme and animations
-│   └── js/
-│       └── app.js         # Fetching, rendering, and tweet composition
-└── README.md              # Project documentation
-```
+5. Abra o navegador e acesse o endereço:
+   [http://127.0.0.1:5000](http://127.0.0.1:5000)
