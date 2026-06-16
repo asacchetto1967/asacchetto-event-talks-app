@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BigQuery Release Radar</title>
+    <meta name="description" content="A premium real-time monitoring and sharing dashboard for Google Cloud BigQuery release notes and updates. Compose and post tweets directly.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Background decorative glows -->
+        <div class="glow-sphere glow-sphere-1"></div>
+        <div class="glow-sphere glow-sphere-2"></div>
+
+        <!-- Header Section -->
+        <header class="app-header">
+            <div class="brand">
+                <div class="logo-container">
+                    <!-- Custom SVG BigQuery-like Logo -->
+                    <svg viewBox="0 0 24 24" class="bq-logo">
+                        <path fill="#4285F4" d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z"/>
+                        <circle cx="12" cy="13" r="3" fill="#34A853"/>
+                        <path fill="#EA4335" d="M12 10v3h3"/>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <h1>BigQuery Release Radar</h1>
+                    <p class="subtitle">Monitor Google Cloud BigQuery updates & tweet insights</p>
+                </div>
+            </div>
+            <div class="actions-header">
+                <span id="cache-time" class="cache-time-badge">Syncing...</span>
+                <button id="btn-refresh" class="btn btn-primary">
+                    <i class="fa-solid fa-arrows-rotate spinner-icon"></i>
+                    <span>Refresh Feed</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Stats Counter Overview -->
+        <section class="stats-overview">
+            <div class="stat-card" data-filter="all">
+                <div class="stat-icon-wrapper blue">
+                    <i class="fa-solid fa-list-check"></i>
+                </div>
+                <div class="stat-details">
+                    <span class="stat-count" id="count-all">-</span>
+                    <span class="stat-label">Total Updates</span>
+                </div>
+            </div>
+            <div class="stat-card" data-filter="feature">
+                <div class="stat-icon-wrapper green">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </div>
+                <div class="stat-details">
+                    <span class="stat-count" id="count-features">-</span>
+                    <span class="stat-label">Features</span>
+                </div>
+            </div>
+            <div class="stat-card" data-filter="deprecation">
+                <div class="stat-icon-wrapper orange">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div class="stat-details">
+                    <span class="stat-count" id="count-deprecations">-</span>
+                    <span class="stat-label">Deprecations</span>
+                </div>
+            </div>
+            <div class="stat-card" data-filter="resolved">
+                <div class="stat-icon-wrapper red">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div class="stat-details">
+                    <span class="stat-count" id="count-resolved">-</span>
+                    <span class="stat-label">Resolved / Other</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Layout -->
+        <main class="main-content">
+            <!-- Sidebar controls -->
+            <aside class="sidebar">
+                <div class="control-group">
+                    <label for="search-input"><i class="fa-solid fa-magnifying-glass"></i> Search Updates</label>
+                    <div class="search-wrapper">
+                        <input type="text" id="search-input" placeholder="Filter by keyword, feature...">
+                        <button id="clear-search" class="clear-btn" style="display: none;">&times;</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label><i class="fa-solid fa-filter"></i> Categories</label>
+                    <div class="filter-pills" id="category-filters">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label><i class="fa-solid fa-calendar"></i> Date Range</label>
+                    <select id="date-filter" class="form-select">
+                        <option value="all">All Time</option>
+                        <option value="7">Last 7 Days</option>
+                        <option value="30">Last 30 Days</option>
+                        <option value="90">Last 90 Days</option>
+                    </select>
+                </div>
+
+                <div class="sidebar-footer">
+                    <p>Select any card to enable custom Twitter composition and publishing.</p>
+                </div>
+            </aside>
+
+            <!-- Cards Panel -->
+            <section class="cards-panel">
+                <!-- Loader State -->
+                <div id="loader" class="loader-container">
+                    <div class="spinner-large"></div>
+                    <p>Loading latest BigQuery updates...</p>
+                </div>
+
+                <!-- Error State -->
+                <div id="error-container" class="error-container" style="display: none;">
+                    <i class="fa-solid fa-circle-exclamation error-icon"></i>
+                    <h3>Failed to fetch release notes</h3>
+                    <p id="error-msg">Unknown error occurred.</p>
+                    <button id="btn-retry" class="btn btn-secondary">Try Again</button>
+                </div>
+
+                <!-- Empty State -->
+                <div id="empty-state" class="empty-state" style="display: none;">
+                    <i class="fa-solid fa-folder-open empty-icon"></i>
+                    <h3>No updates found</h3>
+                    <p>Try refining your search keywords or filters.</p>
+                </div>
+
+                <!-- Cards Grid -->
+                <div id="cards-grid" class="cards-grid" style="display: none;">
+                    <!-- Inserted by JS -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Floating Share / Compose Drawer -->
+        <div id="tweet-drawer" class="tweet-drawer">
+            <div class="drawer-header">
+                <div class="drawer-title">
+                    <i class="fa-brands fa-x-twitter twitter-icon"></i>
+                    <h3>Compose Tweet</h3>
+                </div>
+                <button id="btn-close-drawer" class="btn-close">&times;</button>
+            </div>
+            <div class="drawer-body">
+                <div class="selected-meta-info">
+                    <span id="selected-type-badge" class="badge">Feature</span>
+                    <span id="selected-date" class="date-str">June 15, 2026</span>
+                </div>
+                <div class="textarea-wrapper">
+                    <textarea id="tweet-text" rows="4" maxlength="280" placeholder="Compose your tweet here..."></textarea>
+                    <div class="char-counter-container">
+                        <span id="char-counter">0/280</span>
+                    </div>
+                </div>
+                <div class="drawer-actions">
+                    <button id="btn-copy-tweet" class="btn btn-secondary" title="Copy to Clipboard">
+                        <i class="fa-solid fa-copy"></i> Copy
+                    </button>
+                    <button id="btn-tweet-intent" class="btn btn-twitter">
+                        <i class="fa-brands fa-x-twitter"></i> Tweet Update
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div id="toast-container" class="toast-container"></div>
+    </div>
+
+    <!-- Main JS -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
