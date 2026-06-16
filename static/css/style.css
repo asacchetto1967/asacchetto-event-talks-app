@@ -33,6 +33,115 @@
     --font-body: 'Inter', sans-serif;
 }
 
+/* Light Theme Variables & Overrides */
+:root[data-theme="light"] {
+    --bg-primary: #f8fafc;
+    --bg-secondary: #f1f5f9;
+    --bg-panel: rgba(255, 255, 255, 0.85);
+    --bg-panel-hover: rgba(255, 255, 255, 0.98);
+    --border-color: rgba(0, 0, 0, 0.08);
+    --border-hover: rgba(99, 102, 241, 0.5);
+    
+    /* Text Colors */
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+    
+    /* Shadows & Glows */
+    --glow-shadow: 0 0 25px rgba(99, 102, 241, 0.1);
+    --glow-shadow-heavy: 0 0 35px rgba(99, 102, 241, 0.2);
+    --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+}
+
+:root[data-theme="light"] .glow-sphere {
+    opacity: 0.04;
+}
+
+:root[data-theme="light"] .brand-text h1 {
+    background: linear-gradient(to right, #0f172a, #475569);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+:root[data-theme="light"] .btn-twitter {
+    background-color: #0f172a;
+    color: #ffffff;
+}
+
+:root[data-theme="light"] .btn-twitter:hover {
+    background-color: #1e293b;
+}
+
+:root[data-theme="light"] .tweet-drawer {
+    background: rgba(255, 255, 255, 0.98);
+    border-color: var(--accent-indigo);
+    box-shadow: 0 -10px 40px -10px rgba(99, 102, 241, 0.15), 0 0 100px rgba(0, 0, 0, 0.1);
+}
+
+:root[data-theme="light"] .textarea-wrapper textarea {
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    color: #0f172a;
+}
+
+:root[data-theme="light"] .twitter-icon {
+    color: #0f172a;
+}
+
+:root[data-theme="light"] .btn-close {
+    color: var(--text-secondary);
+}
+
+:root[data-theme="light"] .btn-close:hover {
+    color: var(--text-primary);
+}
+
+:root[data-theme="light"] .search-wrapper input {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #0f172a;
+}
+
+:root[data-theme="light"] .form-select {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #0f172a;
+}
+
+:root[data-theme="light"] .filter-pill {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+:root[data-theme="light"] .filter-pill:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+:root[data-theme="light"] .filter-pill.active {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(168, 85, 247, 0.1));
+    color: var(--accent-indigo);
+}
+
+:root[data-theme="light"] .card-body code {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+:root[data-theme="light"] .cache-time-badge {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+:root[data-theme="light"] .btn-secondary {
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    color: #0f172a;
+}
+
+:root[data-theme="light"] .btn-secondary:hover {
+    background: rgba(0, 0, 0, 0.06);
+    border-color: rgba(0, 0, 0, 0.15);
+}
+
+:root[data-theme="light"] .btn-copy-card:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
 /* ==========================================================================
    BASE STYLES & RESET
    ========================================================================== */

@@ -17,6 +17,7 @@ const cardsGrid = document.getElementById('cards-grid');
 const btnRefresh = document.getElementById('btn-refresh');
 const btnRetry = document.getElementById('btn-retry');
 const cacheTimeBadge = document.getElementById('cache-time');
+const btnThemeToggle = document.getElementById('btn-theme-toggle');
 const searchInput = document.getElementById('search-input');
 const clearSearchBtn = document.getElementById('clear-search');
 const dateFilter = document.getElementById('date-filter');
@@ -39,12 +40,18 @@ const countResolved = document.getElementById('count-resolved');
 
 // Initialize App
 document.addEventListener('DOMContentLoaded', () => {
+    initTheme();
     fetchReleases(false);
     setupEventListeners();
 });
 
 // Setup Event Listeners
 function setupEventListeners() {
+    // Theme Toggle
+    if (btnThemeToggle) {
+        btnThemeToggle.addEventListener('click', toggleTheme);
+    }
+
     // Export CSV
     const btnExportCsv = document.getElementById('btn-export-csv');
     if (btnExportCsv) {
@@ -522,5 +529,34 @@ function exportToCSV(releases) {
     } catch (err) {
         console.error('CSV export failed:', err);
         showToast('Erro ao exportar CSV', 'error');
+    }
+}
+
+// Theme Management Helpers
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeToggleIcon(savedTheme);
+}
+
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    document.documentElement.setAttribute('data-theme', nextTheme);
+    localStorage.setItem('theme', nextTheme);
+    updateThemeToggleIcon(nextTheme);
+    showToast(`Modo ${nextTheme === 'dark' ? 'escuro' : 'claro'} ativado!`, 'success');
+}
+
+function updateThemeToggleIcon(theme) {
+    if (!btnThemeToggle) return;
+    const icon = btnThemeToggle.querySelector('i');
+    if (icon) {
+        if (theme === 'light') {
+            icon.className = 'fa-solid fa-sun';
+        } else {
+            icon.className = 'fa-solid fa-moon';
+        }
     }
 }
